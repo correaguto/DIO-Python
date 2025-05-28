@@ -1,0 +1,59 @@
+def menu():
+    print("\n--- Sistema Bancário ---")
+    print("1 - Depositar")
+    print("2 - Sacar")
+    print("3 - Ver Extrato")
+    print("4 - Sair")
+
+saldo = 0.0
+limite_saque = 500
+extrato = []
+saques_diarios = 0
+LIMITE_SAQUES = 3
+
+while True:
+    menu()
+    opcao = input("Escolha uma opção: ")
+
+    if opcao == "1":
+        valor = float(input("Digite o valor para depósito: R$ "))
+        if valor > 0:
+            saldo += valor
+            extrato.append(f"Depósito: R$ {valor:.2f}")
+            print("Depósito realizado com sucesso.")
+        else:
+            print("Valor inválido. Informe um valor positivo.")
+
+    elif opcao == "2":
+        if saques_diarios >= LIMITE_SAQUES:
+            print("Limite diário de saques atingido.")
+            continue
+
+        valor = float(input("Digite o valor para saque: R$ "))
+        if valor > saldo:
+            print("Saldo insuficiente.")
+        elif valor > limite_saque:
+            print("Limite máximo por saque é de R$ 500,00.")
+        elif valor <= 0:
+            print("Valor inválido.")
+        else:
+            saldo -= valor
+            extrato.append(f"Saque:    R$ {valor:.2f}")
+            saques_diarios += 1
+            print("Saque realizado com sucesso.")
+
+    elif opcao == "3":
+        print("\n--- Extrato ---")
+        if not extrato:
+            print("Não foram realizadas movimentações.")
+        else:
+            for operacao in extrato:
+                print(operacao)
+        print(f"\nSaldo atual: R$ {saldo:.2f}")
+
+    elif opcao == "4":
+        print("Encerrando o sistema. Obrigado!")
+        break
+
+    else:
+        print("Opção inválida. Tente novamente.")
