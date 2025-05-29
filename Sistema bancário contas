@@ -1,0 +1,102 @@
+class ContaBancaria:
+    def __init__(self, titular):
+        self.titular = titular
+        self.saldo = 0.0
+        self.limite_saque = 500.0
+        self.extrato = []
+        self.saques_diarios = 0
+        self.LIMITE_SAQUES = 3
+
+    def depositar(self, valor):
+        if valor > 0:
+            self.saldo += valor
+            self.extrato.append(f"Depósito: R$ {valor:.2f}")
+            print("Depósito realizado com sucesso.")
+        else:
+            print("Valor inválido. Informe um valor positivo.")
+
+    def sacar(self, valor):
+        if self.saques_diarios >= self.LIMITE_SAQUES:
+            print("Limite diário de saques atingido.")
+            return
+        if valor > self.saldo:
+            print("Saldo insuficiente.")
+        elif valor > self.limite_saque:
+            print(f"Limite máximo por saque é de R$ {self.limite_saque:.2f}.")
+        elif valor <= 0:
+            print("Valor inválido.")
+        else:
+            self.saldo -= valor
+            self.extrato.append(f"Saque:    R$ {valor:.2f}")
+            self.saques_diarios += 1
+            print("Saque realizado com sucesso.")
+
+    def mostrar_extrato(self):
+        print(f"\n--- Extrato da conta de {self.titular} ---")
+        if not self.extrato:
+            print("Não foram realizadas movimentações.")
+        else:
+            for operacao in self.extrato:
+                print(operacao)
+        print(f"\nSaldo atual: R$ {self.saldo:.2f}")
+
+def menu_principal():
+    print("\n--- Banco Python ---")
+    print("1 - Criar nova conta")
+    print("2 - Acessar conta existente")
+    print("3 - Sair")
+
+def menu_conta(nome):
+    print(f"\n--- Conta de {nome} ---")
+    print("1 - Depositar")
+    print("2 - Sacar")
+    print("3 - Ver Extrato")
+    print("4 - Voltar ao menu principal")
+
+contas = {}
+
+while True:
+    menu_principal()
+    escolha = input("Escolha uma opção: ")
+
+    if escolha == "1":
+        nome = input("Digite o nome do titular para nova conta: ")
+        if nome in contas:
+            print("Conta já existe para esse titular.")
+        else:
+            contas[nome] = ContaBancaria(nome)
+            print(f"Conta criada com sucesso para {nome}.")
+
+    elif escolha == "2":
+        nome = input("Digite o nome do titular da conta: ")
+        if nome not in contas:
+            print("Conta não encontrada.")
+        else:
+            conta = contas[nome]
+            while True:
+                menu_conta(nome)
+                opc = input("Escolha uma opção: ")
+
+                if opc == "1":
+                    valor = float(input("Digite o valor para depósito: R$ "))
+                    conta.depositar(valor)
+
+                elif opc == "2":
+                    valor = float(input("Digite o valor para saque: R$ "))
+                    conta.sacar(valor)
+
+                elif opc == "3":
+                    conta.mostrar_extrato()
+
+                elif opc == "4":
+                    break
+
+                else:
+                    print("Opção inválida. Tente novamente.")
+
+    elif escolha == "3":
+        print("Obrigado por usar o Banco Python. Até logo!")
+        break
+
+    else:
+        print("Opção inválida. Tente novamente.")
